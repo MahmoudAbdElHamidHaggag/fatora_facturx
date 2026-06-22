@@ -1,33 +1,64 @@
-### Fatora Facturx
+# Fatora Facturx
 
-Genrate mearg pdf with xml
+تطبيق لانشاء فواتير PDF مدمجة مع XML بتاع ZATCA في ERPNext 15.
 
-### Installation
+## المتطلبات
+- ERPNext 15
+- KSA Compliance App
+- Python 3.10+
 
-You can install this app using the [bench](https://github.com/frappe/bench) CLI:
+## التنصيب
 
+### 1. نصب التطبيق
 ```bash
-cd $PATH_TO_YOUR_BENCH
-bench get-app $URL_OF_THIS_REPO --branch develop
-bench install-app fatora_facturx
+bench get-app fatora_facturx [repo_url]
+bench --site [site_name] install-app fatora_facturx
 ```
 
-### Contributing
-
-This app uses `pre-commit` for code formatting and linting. Please [install pre-commit](https://pre-commit.com/#installation) and enable it for this repository:
-
+### 2. نصب المكتبات
 ```bash
-cd apps/fatora_facturx
-pre-commit install
+bash apps/fatora_facturx/install.sh [site_name]
 ```
 
-Pre-commit is configured to use the following tools for checking and formatting your code:
+مثال:
+```bash
+bash apps/fatora_facturx/install.sh erp.erpnext.support
+```
 
-- ruff
-- eslint
-- prettier
-- pyupgrade
+## الاعدادات
+روح Facturx Settings واختار:
+- Single Format: تنسيق واحد - حدد التنسيق الافتراضي
+- Multiple Formats: يظهر Dialog لاختيار التنسيق عند كل طباعة
 
-### License
+## الاستخدام
+1. افتح اي Sales Invoice مسبمتة
+2. اضغط زرار Factur-X PDF
+3. سيتم تحميل PDF مدمج مع XML تلقائيا
 
-mit
+## هيكل التطبيق
+fatora_facturx/
+
+├── fatora_facturx/
+
+│   ├── doctype/
+
+│   │   ├── facturx_settings/
+
+│   │   └── facturx_invoice/
+
+│   ├── public/js/
+
+│   │   └── sales_invoice.js
+
+│   └── api.py
+
+├── requirements.txt
+
+├── install.sh
+
+└── README.md
+
+## المكتبات
+- playwright: تحويل HTML الى PDF بجودة عالية
+- pypdf: دمج XML جوا PDF
+- factur-x: مكتبة Factur-X

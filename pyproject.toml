@@ -1,7 +1,7 @@
 [project]
 name = "fatora_facturx"
 authors = [
-    { name = "mahmoud haggag", email = "haggag.haggag224@gmail.com"}
+    { name = "mahmhoud haggag", email = "haggag.haggag224@gmail.com"}
 ]
 description = "Genrate mearg pdf with xml"
 requires-python = ">=3.10"

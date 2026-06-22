@@ -1,0 +1,3 @@
+factur-x==4.3
+pypdf
+playwright
