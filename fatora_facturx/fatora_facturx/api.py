@@ -7,24 +7,19 @@ import os
 def get_pdf_with_chromium(invoice_name, print_format):
     from playwright.sync_api import sync_playwright
     
-    # جيب الـ HTML من ERPNext
     html_content = frappe.get_print(
         "Sales Invoice",
         invoice_name,
         print_format=print_format
     )
     
-    # جيب الـ site URL
     site_url = frappe.utils.get_url()
-    
-    # استبدل الـ relative paths بـ absolute URLs
     html_content = html_content.replace(
         'href="/', f'href="{site_url}/'
     ).replace(
         'src="/', f'src="{site_url}/'
     )
     
-    # احفظ HTML مؤقت
     with tempfile.NamedTemporaryFile(suffix='.html', delete=False, mode='w', encoding='utf-8') as f:
         f.write(html_content)
         tmp_html = f.name
@@ -73,25 +68,20 @@ def generate_facturx(invoice_name, print_format):
     if not xml_content:
         frappe.throw(_("XML content is empty"))
     
-    # جيب الـ PDF بـ Chromium
+    # ولّد PDF جديد دايماً
     pdf_content = get_pdf_with_chromium(invoice_name, print_format)
     
-    # ادمج XML جوا PDF
     from pypdf import PdfWriter, PdfReader
-    
     reader = PdfReader(io.BytesIO(pdf_content))
     writer = PdfWriter()
-    
     for page in reader.pages:
         writer.add_page(page)
-    
     writer.add_attachment("factur-x.xml", xml_content.encode("utf-8"))
-    
     output = io.BytesIO()
     writer.write(output)
     merged_content = output.getvalue()
     
-    # امسح القديم لو موجود
+    # امسح الملف القديم لو موجود
     existing_fx = frappe.get_all(
         "Facturx Invoice",
         filters={"sales_invoice": invoice_name},
@@ -112,7 +102,9 @@ def generate_facturx(invoice_name, print_format):
         except Exception:
             pass
     
-    file_name = f"{invoice_name} \u2726.pdf"
+    # احفظ الملف الجديد دايماً باسم جديد فريد
+    import time
+    file_name = f"{invoice_name}-{int(time.time())} \u2726.pdf"
     file_doc = frappe.get_doc({
         "doctype": "File",
         "file_name": file_name,
@@ -121,6 +113,7 @@ def generate_facturx(invoice_name, print_format):
     })
     file_doc.insert(ignore_permissions=True)
     
+    # حدّث أو أنشئ Facturx Invoice
     if existing_fx:
         fx_doc = frappe.get_doc("Facturx Invoice", existing_fx[0].name)
         fx_doc.print_format_used = print_format
