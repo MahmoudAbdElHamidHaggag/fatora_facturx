@@ -19,6 +19,18 @@ bench --site [site_name] install-app fatora_facturx
 ```bash
 bash apps/fatora_facturx/install.sh [site_name]
 ```
+### طريقه تنصيب المكتبات بشكل اخر
+# على السيرفر
+bench pip install factur-x
+source ~/frappe-bench/env/bin/activate
+pip install playwright
+python3 -m playwright install chromium
+#### او
+# على السيرفر
+bench pip install factur-x
+pip install playwright
+python3 -m playwright install chromium
+sudo python3 -m playwright install-deps chromium
 
 مثال:
 ```bash
